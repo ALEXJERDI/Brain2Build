@@ -19,4 +19,6 @@ public class IdeaReadDto implements Serializable {
     Idea.Status status;
     LocalDateTime createdAt;
     IdeatorSimpleDto createdBy;
+    String feedback;
+
 }

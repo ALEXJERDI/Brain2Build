@@ -8,7 +8,7 @@ import java.util.Set;
 @Mapper(
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         componentModel = MappingConstants.ComponentModel.SPRING,
-        uses = { RoleMapper.class, IdeaMapper.class }
+        uses = { RoleMapper.class }
 )
 public interface IdeatorMapper {
 
@@ -28,4 +28,5 @@ public interface IdeatorMapper {
     @Mapping(target = "roles", ignore = true)
     Ideator partialUpdate(IdeatorCreateUpdateDto dto, @MappingTarget Ideator ideator);
 }
+
 

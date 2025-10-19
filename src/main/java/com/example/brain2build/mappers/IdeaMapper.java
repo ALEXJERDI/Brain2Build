@@ -7,8 +7,7 @@ import java.util.Set;
 
 @Mapper(
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        componentModel = MappingConstants.ComponentModel.SPRING,
-        uses = { IdeatorMapper.class }
+        componentModel = MappingConstants.ComponentModel.SPRING
 )
 public interface IdeaMapper {
 
@@ -19,5 +18,12 @@ public interface IdeaMapper {
 
     IdeaReadDto toReadDto(Idea idea);
     Set<IdeaReadDto> toReadDtoSet(Set<Idea> ideas);
-}
 
+    // ✅ ajout utile pour vues légères
+    IdeaSimpleDto toSimpleDto(Idea idea);
+    Set<IdeaSimpleDto> toSimpleDtoSet(Set<Idea> ideas);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void partialUpdate(IdeaCreateUpdateDto dto, @MappingTarget Idea entity);
+
+}
