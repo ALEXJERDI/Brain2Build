@@ -44,6 +44,9 @@ public class Idea {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(length = 500)
+    private String feedback;
+
     @ManyToOne
     @JoinColumn(name = "created_by")
     private Ideator createdBy;
