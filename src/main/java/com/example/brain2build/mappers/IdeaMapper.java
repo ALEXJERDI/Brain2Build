@@ -3,27 +3,22 @@ package com.example.brain2build.mappers;
 import com.example.brain2build.domain.entity.Idea;
 import com.example.brain2build.domain.dto.Idea.*;
 import org.mapstruct.*;
-import java.util.Set;
 
-@Mapper(
-        unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        componentModel = MappingConstants.ComponentModel.SPRING
-)
+import java.util.Set;@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface IdeaMapper {
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "createdBy", ignore = true)
     Idea toEntity(IdeaCreateUpdateDto dto);
 
+    // Ensure that MapStruct knows how to map 'status'
+    @Mapping(source = "status", target = "status")
     IdeaReadDto toReadDto(Idea idea);
+
     Set<IdeaReadDto> toReadDtoSet(Set<Idea> ideas);
 
-    // ✅ ajout utile pour vues légères
     IdeaSimpleDto toSimpleDto(Idea idea);
+
     Set<IdeaSimpleDto> toSimpleDtoSet(Set<Idea> ideas);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void partialUpdate(IdeaCreateUpdateDto dto, @MappingTarget Idea entity);
-
 }

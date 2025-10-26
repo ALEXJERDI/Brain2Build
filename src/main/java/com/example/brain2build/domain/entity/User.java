@@ -1,15 +1,19 @@
 package com.example.brain2build.domain.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import lombok.Getter;
 import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+
+import java.time.Instant;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -19,7 +23,7 @@ import lombok.AllArgsConstructor;
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "user_type", length = 20)
-public abstract class User {
+public abstract class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,7 +51,7 @@ public abstract class User {
     @Column(nullable = false)
     private Instant updatedAt;
 
-    // Relation avec les rôles (Spring Security ou gestion de droits)
+    // Relation avec les rôles
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role",
@@ -55,5 +59,44 @@ public abstract class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
+
+    // ✅ Méthodes exigées par UserDetails
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles.stream()
+                .map(role -> new SimpleGrantedAuthority(role.getNom())) // Exemple : ROLE_ADMIN
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public String getUsername() {
+        return email; // utilisé comme identifiant dans Spring Security
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true; // tu pourras plus tard ajouter une gestion d'expiration
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true; // ou ajouter un champ "locked" dans la base
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true; // on considère que les identifiants ne "périment" pas
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true; // tu pourrais plus tard désactiver un compte
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
 
 }

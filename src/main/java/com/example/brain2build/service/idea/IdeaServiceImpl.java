@@ -34,7 +34,7 @@ public class IdeaServiceImpl implements IdeaService {
 
     @Override
     public List<IdeaReadDto> searchIdeas(String keyword) {
-        return ideaRepository.findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(keyword, keyword)
+        return ideaRepository.findByTitreContainingIgnoreCaseOrDescriptionContainingIgnoreCase(keyword, keyword)
                 .stream()
                 .map(ideaMapper::toReadDto)
                 .toList();

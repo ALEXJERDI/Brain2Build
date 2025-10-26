@@ -1,46 +1,55 @@
 package com.example.brain2build.service.user;
 
+import com.example.brain2build.domain.dto.Role.RoleDto;
 import com.example.brain2build.domain.dto.User.*;
 import com.example.brain2build.domain.entity.User;
-import com.example.brain2build.mappers.UserMapper;
-import com.example.brain2build.repository.RoleRepository;
 import com.example.brain2build.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
 import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final UserMapper userMapper;
-    private final PasswordEncoder passwordEncoder;
 
     @Override
-    public UserReadDto createUser(UserCreateUpdateDto dto) {
-        User user = userMapper.toEntity(dto);
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        user.setRoles(Set.of(roleRepository.findByName("ROLE_USER").orElseThrow()));
-        return userMapper.toReadDto(userRepository.save(user));
+    public Set<UserReadDto> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(user -> new UserReadDto(
+                        user.getId(),
+                        user.getEmail(),
+                        user.getNom(),
+                        user.getPrenom(),
+                        user.getTelephone(),
+                        user.getRoles().stream()
+                                .map(role -> new RoleDto(role.getId(), role.getNom()))
+                                .collect(Collectors.toSet())
+                ))
+                .collect(Collectors.toSet());
     }
 
     @Override
     public UserReadDto updateUser(Long id, UserCreateUpdateDto dto) {
-        User existingUser = userRepository.findById(id)
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        userMapper.partialUpdate(dto, existingUser);
-        return userMapper.toReadDto(userRepository.save(existingUser));
-    }
 
-    @Override
-    public Set<UserReadDto> getAllUsers() {
-        return userMapper.toReadDtoSet(
-                userRepository.findAll().stream().collect(Collectors.toSet())
+        user.setEmail(dto.getEmail());
+        user.setNom(dto.getNom());
+        user.setPrenom(dto.getPrenom());
+        user.setTelephone(dto.getTelephone());
+
+        return new UserReadDto(
+                user.getId(),
+                user.getEmail(),
+                user.getNom(),
+                user.getPrenom(),
+                user.getTelephone(),
+                user.getRoles().stream()
+                        .map(role -> new RoleDto(role.getId(), role.getNom()))
+                        .collect(Collectors.toSet())
         );
     }
 

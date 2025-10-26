@@ -5,19 +5,15 @@ import com.example.brain2build.domain.dto.Project.*;
 import org.mapstruct.*;
 import java.util.Set;
 
-@Mapper(
-        unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        componentModel = MappingConstants.ComponentModel.SPRING,
-        uses = { IdeaMapper.class }
-)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ProjectMapper {
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "startDate", ignore = true)
-    @Mapping(target = "endDate", ignore = true)
     Project toEntity(ProjectCreateUpdateDto dto);
 
     ProjectReadDto toReadDto(Project project);
-    Set<ProjectReadDto> toReadDtoSet(Set<Project> projects);
-}
 
+    Set<ProjectReadDto> toReadDtoSet(Set<Project> projects);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void partialUpdate(ProjectCreateUpdateDto dto, @MappingTarget Project project);
+}
