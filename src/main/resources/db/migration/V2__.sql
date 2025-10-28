@@ -117,3 +117,5 @@ ALTER TABLE user_role
 
 ALTER TABLE user_role
     ADD CONSTRAINT fk_user_role_on_user FOREIGN KEY (user_id) REFERENCES users (id);
+ALTER TABLE ideas
+    ADD feedback VARCHAR(500);
