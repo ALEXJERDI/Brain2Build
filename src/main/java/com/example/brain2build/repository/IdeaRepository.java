@@ -12,10 +12,10 @@ import java.util.Optional;
 public interface IdeaRepository extends JpaRepository<Idea, Long> {
 
     // 🔍 Trouver une idée par son titre (exact)
-    Optional<Idea> findByTitle(String title);
+    Optional<Idea> findByTitre(String title);
 
     // 🔍 Rechercher des idées contenant un mot-clé dans le titre ou la description
-    List<Idea> findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String title, String description);
+    List<Idea> findByTitreContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String titre, String description);
 
     // 🔍 Trouver toutes les idées d’un ideator
     List<Idea> findByCreatedBy(Ideator ideator);

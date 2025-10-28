@@ -14,8 +14,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     // 🔍 Trouver un projet par son nom
     Optional<Project> findByProjectName(String projectName);
 
-    // 🔍 Tous les projets liés à une idée donnée
-    List<Project> findByIdea(Idea idea);
 
     // 🔍 Filtrer les projets selon leur statut
     List<Project> findByStatus(Project.Status status);

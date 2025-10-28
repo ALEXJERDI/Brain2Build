@@ -5,11 +5,11 @@ import java.util.Set;
 
 public interface UserService {
 
-    UserReadDto createUser(UserCreateUpdateDto dto);
 
-    UserReadDto updateUser(Long id, UserCreateUpdateDto dto);
 
     Set<UserReadDto> getAllUsers();
+
+    UserReadDto updateUser(Long id, UserCreateUpdateDto dto);
 
     void deleteUser(Long id);
 }

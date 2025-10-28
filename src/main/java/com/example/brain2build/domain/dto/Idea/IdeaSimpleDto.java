@@ -5,7 +5,6 @@ import jakarta.validation.constraints.Size;
 import lombok.Value;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * DTO for {@link com.example.brain2build.domain.entity.Idea}
@@ -13,6 +12,6 @@ import java.time.LocalDateTime;
 @Value
 public class IdeaSimpleDto implements Serializable {
     Long id;
-    String title;
-    String status;
+    String title;  // Keep "title" consistent with the other DTOs if you're following that naming convention
+    String status;  // Status should be String if it's coming from the enum.
 }
