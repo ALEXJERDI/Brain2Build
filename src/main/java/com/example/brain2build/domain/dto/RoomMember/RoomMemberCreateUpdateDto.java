@@ -14,4 +14,8 @@ public class RoomMemberCreateUpdateDto implements Serializable {
     boolean isLead;
     @NotNull(message = "L'identifiant du worker est obligatoire")
     Long workerId;
+    Long roomId;
+
+
+
 }
