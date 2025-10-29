@@ -17,13 +17,16 @@ import lombok.AllArgsConstructor;
 @DiscriminatorValue("WORKER")
 public class Worker extends User {
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String domaine;      // Backend, Frontend, DevOps, etc.
 
-    @Column(nullable = false)
-    private String specialite;   // Java, React, Docker...
+    @Column(nullable = true)
+    private String specialite;// Java, React, Docker...
 
-    private int experience;      // en années
+    @Column(nullable = true)
+    private int experience;
+
+    @Column(nullable = true)// en années
     private String portfolioUrl; // lien vers son travail
 
 
