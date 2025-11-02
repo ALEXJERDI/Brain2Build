@@ -6,6 +6,7 @@ import com.example.brain2build.domain.dto.Auth.IdeatorRegisterRequest;
 import com.example.brain2build.domain.entity.Ideator;
 import com.example.brain2build.repository.RoleRepository;
 import com.example.brain2build.repository.IdeatorRepository;
+import com.example.brain2build.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,9 +20,16 @@ public class IdeatorAuthServiceImpl implements IdeatorAuthService {
     private final RoleRepository roleRepository;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+
 
     @Override
     public AuthResponse registerIdeator(IdeatorRegisterRequest request) {
+
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("Email already in use");
+        }
+
         Ideator ideator = new Ideator();
         ideator.setEmail(request.getEmail());
         ideator.setPassword(passwordEncoder.encode(request.getPassword()));
