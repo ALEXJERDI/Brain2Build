@@ -1,5 +1,6 @@
 package com.example.brain2build.domain.dto.Role;
 
+import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import java.io.Serializable;

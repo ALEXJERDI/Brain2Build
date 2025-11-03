@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Set;
 import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -25,7 +26,7 @@ public class UserServiceImpl implements UserService {
                         user.getPrenom(),
                         user.getTelephone(),
                         user.getRoles().stream()
-                                .map(role -> new RoleDto(role.getId(), role.getNom()))
+                                .map(role -> new RoleDto(role.getId(), role.getNom()))  // Correctly using RoleDto constructor
                                 .collect(Collectors.toSet())
                 ))
                 .collect(Collectors.toSet());
@@ -48,7 +49,7 @@ public class UserServiceImpl implements UserService {
                 user.getPrenom(),
                 user.getTelephone(),
                 user.getRoles().stream()
-                        .map(role -> new RoleDto(role.getId(), role.getNom()))
+                        .map(role -> new RoleDto(role.getId(), role.getNom()))  // Correctly using RoleDto constructor
                         .collect(Collectors.toSet())
         );
     }
