@@ -8,12 +8,15 @@ import java.util.Set;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface RoomMapper {
 
-    Room toEntity(RoomCreateUpdateDto dto);
+    // ✅ For creation
+    Room toEntity(RoomCreateDto dto);
 
+    // ✅ For updates (partial)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void partialUpdate(RoomUpdateDto dto, @MappingTarget Room room);
+
+    // ✅ For reading
     RoomReadDto toReadDto(Room room);
 
     Set<RoomReadDto> toReadDtoSet(Set<Room> rooms);
-
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void partialUpdate(RoomCreateUpdateDto dto, @MappingTarget Room room);
 }

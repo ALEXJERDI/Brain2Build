@@ -50,11 +50,7 @@ public class RoomMemberController {
      * ✅ Lister tous les membres d’une Room
      * Ex: GET /api/rooms/3/members
      */
-    @GetMapping
-    public ResponseEntity<List<RoomMemberReadDto>> getMembersByRoom(@PathVariable Long roomId) {
-        List<RoomMemberReadDto> members = roomMemberService.getMembersByRoom(roomId);
-        return ResponseEntity.ok(members);
-    }
+
 
     /**
      * ✅ Supprimer un membre d’une Room

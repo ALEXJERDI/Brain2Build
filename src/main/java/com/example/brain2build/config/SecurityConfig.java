@@ -37,6 +37,13 @@ public class SecurityConfig {
 
                         // ✅ Domain-specific
                         .requestMatchers("/api/ideas/**").hasAnyRole("ADMIN", "IDEATOR")
+                        .requestMatchers("/api/rooms").hasAnyRole("ADMIN", "WORKER") // GET
+                        .requestMatchers("/api/rooms/{id}").hasAnyRole("ADMIN", "WORKER") // GET
+
+                        .requestMatchers("/api/rooms/project/**").hasAnyRole("ADMIN", "WORKER") // GET
+                        .requestMatchers("/api/rooms").hasRole("WORKER") // POST
+                        .requestMatchers("/api/rooms/**").hasRole("WORKER") // PUT / DELETE
+                        // Autoriser le reste si besoin
 
                         // ✅ Everything else requires authentication
                         .anyRequest().authenticated()

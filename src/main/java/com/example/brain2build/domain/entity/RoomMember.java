@@ -25,7 +25,7 @@ public class RoomMember {
     private String roleInRoom;
 
     @Column(name = "is_lead")
-    private boolean isLead = false;
+    private boolean lead = false;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

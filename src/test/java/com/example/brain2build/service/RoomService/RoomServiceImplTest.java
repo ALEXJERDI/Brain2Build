@@ -1,11 +1,8 @@
 package com.example.brain2build.service.RoomService;
 
-
-
-
-
-import com.example.brain2build.domain.dto.Room.RoomCreateUpdateDto;
+import com.example.brain2build.domain.dto.Room.RoomCreateDto;
 import com.example.brain2build.domain.dto.Room.RoomReadDto;
+import com.example.brain2build.domain.dto.Room.RoomUpdateDto;
 import com.example.brain2build.domain.dto.RoomMember.RoomMemberReadDto;
 import com.example.brain2build.domain.entity.Project;
 import com.example.brain2build.domain.entity.Room;
@@ -63,7 +60,8 @@ class RoomServiceImplTest {
     private Room room;
     private Project project;
     private RoomReadDto roomReadDto;
-    private RoomCreateUpdateDto roomCreateDto;
+    private RoomCreateDto roomCreateDto;
+    private RoomUpdateDto roomUpdateDto;
 
     @BeforeEach
     void setUp() {
@@ -90,7 +88,8 @@ class RoomServiceImplTest {
                 List.of()
         );
 
-        roomCreateDto = new RoomCreateUpdateDto("AI Room", 5, 1L);
+        roomCreateDto = new RoomCreateDto("AI Room", 5, 1L);
+        roomUpdateDto = new RoomUpdateDto("Updated Room", 8, 1L);
     }
 
     // ------------------------------------------------------------
@@ -99,8 +98,9 @@ class RoomServiceImplTest {
     @Test
     @DisplayName("✅ createRoom() doit sauvegarder et retourner une RoomReadDto")
     void createRoom_shouldSaveAndReturnDto() {
-        when(roomMapper.toEntity(any(RoomCreateUpdateDto.class))).thenReturn(room);
+        when(roomMapper.toEntity(any(RoomCreateDto.class))).thenReturn(room);
         when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
+        when(roomRepository.existsByProject_Id(1L)).thenReturn(false);
         when(roomRepository.save(any(Room.class))).thenReturn(room);
         when(roomMapper.toReadDto(any(Room.class))).thenReturn(roomReadDto);
 
@@ -152,10 +152,10 @@ class RoomServiceImplTest {
         when(roomRepository.save(any(Room.class))).thenReturn(room);
         when(roomMapper.toReadDto(any(Room.class))).thenReturn(roomReadDto);
 
-        RoomReadDto result = roomService.updateRoom(1L, roomCreateDto);
+        RoomReadDto result = roomService.updateRoom(1L, roomUpdateDto);
 
         assertThat(result).isNotNull();
-        verify(roomMapper, times(1)).partialUpdate(any(RoomCreateUpdateDto.class), any(Room.class));
+        verify(roomMapper, times(1)).partialUpdate(any(RoomUpdateDto.class), any(Room.class));
     }
 
     // ------------------------------------------------------------
@@ -182,7 +182,6 @@ class RoomServiceImplTest {
         member.setRoom(room);
         member.setRoleInRoom("Designer");
 
-        // DTO immuable → on utilise le constructeur
         RoomMemberReadDto memberDto = new RoomMemberReadDto(
                 1L,
                 "Designer",

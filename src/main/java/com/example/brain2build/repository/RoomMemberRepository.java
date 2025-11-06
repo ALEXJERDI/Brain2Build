@@ -19,6 +19,8 @@ public interface RoomMemberRepository extends JpaRepository<RoomMember, Long> {
 
     List<RoomMember> findByWorker_Id(Long workerId);
     List<RoomMember> findByRoom_Id(Long roomId);
+    boolean existsByRoom_IdAndLeadTrue(Long roomId);
+
 
 
 }

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -85,11 +86,29 @@ public class RoomMemberServiceImpl implements RoomMemberService {
 
     @Override
     public RoomMemberReadDto promoteToLead(Long roomMemberId) {
+        // 1️⃣ Find the member by ID
         RoomMember member = roomMemberRepository.findById(roomMemberId)
-                .orElseThrow(() -> new RuntimeException("RoomMember not found"));
+                .orElseThrow(() -> new NoSuchElementException("Room member not found"));
 
+        // 2️⃣ Optional safety checks
+        if (member.isLead()) {
+            throw new IllegalStateException("This member is already a lead.");
+        }
+
+        // Prevent multiple leads in the same room (if required by your business logic)
+        boolean anotherLeadExists = roomMemberRepository.existsByRoom_IdAndLeadTrue(member.getRoom().getId());
+        if (anotherLeadExists) {
+            throw new IllegalStateException("This room already has a lead.");
+        }
+
+        // 3️⃣ Promote
         member.setLead(true);
-        RoomMember updated = roomMemberRepository.save(member);
+
+        // 4️⃣ Persist changes
+        RoomMember updated = roomMemberRepository.saveAndFlush(member);
+
+        // 5️⃣ Return the read DTO
         return roomMemberMapper.toReadDto(updated);
     }
+
 }
