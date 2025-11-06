@@ -7,7 +7,7 @@ public interface IdeatorService {
 
     IdeaReadDto proposeIdea(Long ideatorId, IdeaCreateUpdateDto dto);
     List<IdeaReadDto> getMyIdeas(Long ideatorId);
-    IdeaReadDto updateMyIdea(Long ideatorId, Long ideaId, IdeaCreateUpdateDto dto);
+    IdeaReadDto updateMyIdea(Long ideatorId, Long ideaId, IdeaUpdateDto  dto);
     void deleteMyIdea(Long ideatorId, Long ideaId);
     String getIdeaFeedback(Long ideatorId, Long ideaId);
 }

@@ -7,7 +7,10 @@ import java.util.Set;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface WorkerMapper {
-
+    //
+    //@Mapping(target = "id", ignore = true)
+    //@Mapping(target = "createdAt", ignore = true)
+    //@Mapping(target = "updatedAt", ignore = true)
     Worker toEntity(WorkerCreateUpdateDto dto);
 
     WorkerReadDto toReadDto(Worker worker);

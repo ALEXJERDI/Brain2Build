@@ -61,6 +61,8 @@ public class ProjectServiceImpl implements ProjectService {
         room.setProject(project);
         roomRepository.save(room);
 
+        project.setRoom(room);
+
         return projectMapper.toReadDto(project);
     }
 
@@ -89,24 +91,29 @@ public class ProjectServiceImpl implements ProjectService {
      * 🛠️ Mettre à jour un projet existant.
      */
     @Override
-    public ProjectReadDto updateProject(Long id, ProjectCreateUpdateDto dto) {
-        Project existingProject = projectRepository.findById(id)
+    @Transactional
+    public ProjectReadDto updateProject(Long id, ProjectUpdateDto dto) {
+        Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Project not found"));
 
-        existingProject.setProjectName(dto.getProjectName());
+        // ✅ Only update name if it is provided
+        if (dto.getProjectName() != null && !dto.getProjectName().isBlank()) {
+            project.setProjectName(dto.getProjectName());
+        }
 
-        // 🔗 Mettre à jour les idées liées
+        // ✅ Only update ideas if ideaIds is provided
         if (dto.getIdeaIds() != null) {
             Set<Idea> ideas = dto.getIdeaIds().stream()
                     .map(ideaId -> ideaRepository.findById(ideaId)
                             .orElseThrow(() -> new RuntimeException("Idea not found with id: " + ideaId)))
                     .collect(Collectors.toSet());
-            existingProject.setIdeas(ideas);
+            project.setIdeas(ideas);
         }
 
-        projectRepository.save(existingProject);
-        return projectMapper.toReadDto(existingProject);
+        Project saved = projectRepository.save(project);
+        return projectMapper.toReadDto(saved);
     }
+
 
     /**
      * 🔁 Mettre à jour le statut du projet (et le Room associé).

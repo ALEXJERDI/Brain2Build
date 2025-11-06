@@ -102,7 +102,9 @@ public class WorkerServiceImpl implements WorkerService {
                 .orElseThrow(() -> new RuntimeException("Worker not in this room"));
 
         roomMemberRepository.delete(member);
-        room.setFull(false);
+
+        long remainingMembers = roomMemberRepository.countByRoom(room);
+        room.setFull(remainingMembers >= room.getMaxMembers());
         roomRepository.save(room);
     }
 
@@ -111,7 +113,8 @@ public class WorkerServiceImpl implements WorkerService {
      */
     @Override
     public List<ProjectReadDto> getProjectsForWorker(Long workerId) {
-        return roomMemberRepository.findByWorker_Id(workerId).stream()
+        return roomMemberRepository.findByWorker_Id(workerId)
+                .stream()
                 .map(member -> member.getRoom().getProject())
                 .distinct()
                 .map(projectMapper::toReadDto)

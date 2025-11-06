@@ -12,7 +12,7 @@ public interface RoomMapper {
 
     RoomReadDto toReadDto(Room room);
 
-    Set<RoomReadDto> toReadDtoSet(Set<Room> rooms);
+    RoomSimpleDto toSimpleDto(Room room); // <- if used in ProjectReadDto
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void partialUpdate(RoomCreateUpdateDto dto, @MappingTarget Room room);

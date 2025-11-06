@@ -42,7 +42,7 @@ public class IdeatorServiceImpl implements IdeatorService {
     }
 
     @Override
-    public IdeaReadDto updateMyIdea(Long ideatorId, Long ideaId, IdeaCreateUpdateDto dto) {
+    public IdeaReadDto updateMyIdea(Long ideatorId, Long ideaId, IdeaUpdateDto  dto) {
         Ideator ideator = ideatorRepository.findById(ideatorId)
                 .orElseThrow(() -> new RuntimeException("Ideator not found"));
 
@@ -56,7 +56,8 @@ public class IdeatorServiceImpl implements IdeatorService {
             throw new RuntimeException("Idea cannot be modified once reviewed");
 
         ideaMapper.partialUpdate(dto, idea);
-        return ideaMapper.toReadDto(ideaRepository.save(idea));
+        ideaRepository.save(idea);
+        return ideaMapper.toReadDto(idea);
     }
 
     @Override

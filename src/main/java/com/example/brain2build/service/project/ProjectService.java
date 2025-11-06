@@ -1,5 +1,6 @@
 package com.example.brain2build.service.project;
 
+import com.example.brain2build.domain.dto.Project.ProjectUpdateDto;
 import com.example.brain2build.domain.dto.Project.ProjectCreateUpdateDto;
 import com.example.brain2build.domain.dto.Project.ProjectReadDto;
 
@@ -25,7 +26,7 @@ public interface ProjectService {
     /**
      * Mettre à jour un projet (nom, idées liées...).
      */
-    ProjectReadDto updateProject(Long id, ProjectCreateUpdateDto dto);
+    ProjectReadDto updateProject(Long id, ProjectUpdateDto dto);
 
     /**
      * Mettre à jour le statut d’un projet (IN_PROGRESS, COMPLETED, ARCHIVED).
