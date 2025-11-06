@@ -9,6 +9,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -26,35 +27,50 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-
+        // ✅ Skip auth routes (login/register)
         if (request.getServletPath().startsWith("/auth")) {
             filterChain.doFilter(request, response);
             return;
         }
 
         final String authHeader = request.getHeader("Authorization");
-        final String token;
-        final String email;
-
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        token = authHeader.substring(7);
-        email = jwtProvider.extractEmail(token);
+        final String token = authHeader.substring(7);
+        Long userId = null;
 
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
+        try {
+            userId = jwtProvider.extractUserId(token); // ✅ extract user ID from token (not email)
+        } catch (Exception e) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-            if (jwtProvider.validateToken(token, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            // ✅ load user by ID (CustomUserDetailsService now supports this)
+            try {
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(String.valueOf(userId));
 
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+
+                // ✅ verify token validity (expiration + signature)
+                if (jwtProvider.validateToken(token, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails,
+                                    null,
+                                    userDetails.getAuthorities()
+                            );
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+            }catch (UsernameNotFoundException e) {
+                throw e;
             }
         }
+
         filterChain.doFilter(request, response);
     }
 }
