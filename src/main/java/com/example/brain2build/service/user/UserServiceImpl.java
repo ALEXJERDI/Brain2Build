@@ -4,6 +4,7 @@ import com.example.brain2build.domain.dto.Role.RoleDto;
 import com.example.brain2build.domain.dto.User.*;
 import com.example.brain2build.domain.entity.User;
 import com.example.brain2build.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -33,14 +34,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserReadDto updateUser(Long id, UserCreateUpdateDto dto) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        user.setEmail(dto.getEmail());
-        user.setNom(dto.getNom());
-        user.setPrenom(dto.getPrenom());
-        user.setTelephone(dto.getTelephone());
+        if (dto.getEmail() != null) user.setEmail(dto.getEmail());
+        if (dto.getNom() != null) user.setNom(dto.getNom());
+        if (dto.getPrenom() != null) user.setPrenom(dto.getPrenom());
+        if (dto.getTelephone() != null) user.setTelephone(dto.getTelephone());
+
+        userRepository.save(user); // ensure persistence
 
         return new UserReadDto(
                 user.getId(),

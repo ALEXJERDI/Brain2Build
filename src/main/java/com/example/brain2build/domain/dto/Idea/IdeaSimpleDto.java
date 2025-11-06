@@ -12,6 +12,6 @@ import java.io.Serializable;
 @Value
 public class IdeaSimpleDto implements Serializable {
     Long id;
-    String title;  // Keep "title" consistent with the other DTOs if you're following that naming convention
+    String titre;  // Keep "title" consistent with the other DTOs if you're following that naming convention
     String status;  // Status should be String if it's coming from the enum.
 }

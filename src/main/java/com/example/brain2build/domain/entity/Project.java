@@ -44,6 +44,10 @@ public class Project {
     private Set<Idea> ideas;
 
 
+    @OneToOne(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Room room;
+
+
     public enum Status {
         IN_PROGRESS,
         COMPLETED,

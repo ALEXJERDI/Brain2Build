@@ -20,5 +20,5 @@ public interface IdeaMapper {
     Set<IdeaSimpleDto> toSimpleDtoSet(Set<Idea> ideas);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void partialUpdate(IdeaCreateUpdateDto dto, @MappingTarget Idea entity);
+    void partialUpdate(IdeaUpdateDto  dto, @MappingTarget Idea entity);
 }
