@@ -105,7 +105,7 @@ class WorkerControllerTest {
                 "https://portfolio.io/john"
         );
 
-        Mockito.when(workerService.updateWorker(eq(1L), any(WorkerCreateUpdateDto.class)))
+        Mockito.when(workerService.updateWorker(eq(1L), any(WorkerUpdateDto.class)))
                 .thenReturn(updatedWorker);
 
         mockMvc.perform(put("/api/workers/1")

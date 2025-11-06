@@ -18,5 +18,5 @@ public interface WorkerMapper {
     Set<WorkerReadDto> toReadDtoSet(Set<Worker> workers);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void partialUpdate(WorkerCreateUpdateDto dto, @MappingTarget Worker worker);
+    void partialUpdate(WorkerUpdateDto dto, @MappingTarget Worker worker);
 }

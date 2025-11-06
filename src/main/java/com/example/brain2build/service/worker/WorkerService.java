@@ -4,6 +4,7 @@ import com.example.brain2build.domain.dto.Project.ProjectReadDto;
 import com.example.brain2build.domain.dto.Worker.WorkerCreateUpdateDto;
 import com.example.brain2build.domain.dto.Worker.WorkerReadDto;
 import com.example.brain2build.domain.dto.RoomMember.RoomMemberReadDto;
+import com.example.brain2build.domain.dto.Worker.WorkerUpdateDto;
 
 import java.util.List;
 
@@ -47,7 +48,7 @@ public interface WorkerService {
     /**
      * Mettre à jour le profil du worker.
      */
-    WorkerReadDto updateWorker(Long id, WorkerCreateUpdateDto dto);
+    WorkerReadDto updateWorker(Long id, WorkerUpdateDto dto);
 
     /**
      * Supprimer un worker.

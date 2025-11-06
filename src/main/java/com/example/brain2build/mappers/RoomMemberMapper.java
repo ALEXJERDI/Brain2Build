@@ -12,6 +12,7 @@ public interface RoomMemberMapper {
 
     RoomMemberReadDto toReadDto(RoomMember roomMember);
 
+
     Set<RoomMemberReadDto> toReadDtoSet(Set<RoomMember> roomMembers);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

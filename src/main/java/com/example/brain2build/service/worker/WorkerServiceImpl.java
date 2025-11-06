@@ -147,7 +147,7 @@ public class WorkerServiceImpl implements WorkerService {
      * 🛠️ Mise à jour du profil du worker.
      */
     @Override
-    public WorkerReadDto updateWorker(Long id, WorkerCreateUpdateDto dto) {
+    public WorkerReadDto updateWorker(Long id, WorkerUpdateDto dto) {
         Worker existingWorker = workerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Worker not found"));
 
