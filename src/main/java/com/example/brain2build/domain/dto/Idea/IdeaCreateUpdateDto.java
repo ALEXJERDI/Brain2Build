@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class IdeaCreateUpdateDto implements Serializable {
     @NotBlank(message = "Le titre est obligatoire")
     @Size(max = 150, message = "Le titre ne doit pas dépasser 150 caractères")
-    String title;
+    String titre;  // Consistent with the entity field name
     @NotBlank(message = "La description est obligatoire")
     @Size(max = 1000, message = "La description ne doit pas dépasser 1000 caractères")
     String description;

@@ -16,9 +16,10 @@ import lombok.AllArgsConstructor;
 @DiscriminatorValue("ADMIN")
 public class Admin extends User {
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String privilegeLevel; // SUPER_ADMIN, MANAGER...
 
+    @Column(nullable = true)
     private String department; // ex: Validation, Moderation
 
     // Getters / Setters
