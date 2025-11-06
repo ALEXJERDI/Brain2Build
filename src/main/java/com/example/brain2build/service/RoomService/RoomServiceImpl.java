@@ -57,7 +57,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public RoomReadDto updateRoom(Long id, RoomCreateUpdateDto dto) {
+    public RoomReadDto updateRoom(Long id, RoomUpdateDto dto) {
         Room existing = roomRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Room not found"));
 

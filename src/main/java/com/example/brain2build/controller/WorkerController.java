@@ -35,7 +35,7 @@ public class WorkerController {
     @PreAuthorize("#id == authentication.principal.id or hasRole('ADMIN')")
     public ResponseEntity<WorkerReadDto> updateWorker(
             @PathVariable Long id,
-            @RequestBody @Validated WorkerCreateUpdateDto dto
+            @RequestBody @Validated WorkerUpdateDto dto
     ) {
         return ResponseEntity.ok(workerService.updateWorker(id, dto));
     }

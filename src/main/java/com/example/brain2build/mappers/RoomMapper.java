@@ -15,5 +15,5 @@ public interface RoomMapper {
     RoomSimpleDto toSimpleDto(Room room); // <- if used in ProjectReadDto
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void partialUpdate(RoomCreateUpdateDto dto, @MappingTarget Room room);
+    void partialUpdate(RoomUpdateDto dto, @MappingTarget Room room);
 }

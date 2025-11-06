@@ -10,7 +10,7 @@ public interface RoomService {
     RoomReadDto createRoom(RoomCreateUpdateDto dto);
     RoomReadDto getRoomById(Long id);
     List<RoomReadDto> getAllRooms();
-    RoomReadDto updateRoom(Long id, RoomCreateUpdateDto dto);
+    RoomReadDto updateRoom(Long id, RoomUpdateDto dto);
     void deleteRoom(Long id);
 
     List<RoomMemberReadDto> getMembersInRoom(Long roomId);

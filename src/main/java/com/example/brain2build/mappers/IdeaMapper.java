@@ -15,6 +15,7 @@ public interface IdeaMapper {
 
     Set<IdeaReadDto> toReadDtoSet(Set<Idea> ideas);
 
+    @Mapping(source = "titre", target = "titre") // 👈 important
     IdeaSimpleDto toSimpleDto(Idea idea);
 
     Set<IdeaSimpleDto> toSimpleDtoSet(Set<Idea> ideas);

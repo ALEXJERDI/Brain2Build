@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Long> {
     Optional<Room> findByProject_Id(Long projectId);
+
+    boolean existsByProject_Id(Long projectId);
 }
