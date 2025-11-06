@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class RoomMemberReadDto implements Serializable {
     Long id;
     String roleInRoom;
-    boolean isLead;
+    boolean lead;
     LocalDateTime joinedAt;
     WorkerSimpleDto worker;
 }

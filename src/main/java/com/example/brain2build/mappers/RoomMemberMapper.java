@@ -9,7 +9,7 @@ import java.util.Set;
 public interface RoomMemberMapper {
 
     RoomMember toEntity(RoomMemberCreateUpdateDto dto);
-
+    @Mapping(source = "lead", target = "lead")
     RoomMemberReadDto toReadDto(RoomMember roomMember);
 
     Set<RoomMemberReadDto> toReadDtoSet(Set<RoomMember> roomMembers);

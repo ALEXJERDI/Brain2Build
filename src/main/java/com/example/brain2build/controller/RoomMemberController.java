@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class RoomMemberController {
      * Ex: POST /api/rooms/3/members
      */
     @PostMapping
+    //@PreAuthorize(#dto.== authentication.principal.id or hasRole('ADMIN')")=> veriier que l id worker et le meme du roommember
     public ResponseEntity<RoomMemberReadDto> addWorkerToRoom(
             @PathVariable Long roomId,
             @Valid @RequestBody RoomMemberCreateUpdateDto dto) {

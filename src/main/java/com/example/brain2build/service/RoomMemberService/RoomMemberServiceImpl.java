@@ -53,7 +53,7 @@ public class RoomMemberServiceImpl implements RoomMemberService {
 
         return roomMemberMapper.toReadDto(saved);
     }
-
+/// verifier  que lid connecter  est ce qu il est un lead si il est un lead il vas pouvoir suprimmer et verifier  si il existe dans la room
     @Override
     public void removeWorkerFromRoom(Long roomMemberId) {
         RoomMember member = roomMemberRepository.findById(roomMemberId)

@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Value
 public class RoomMemberCreateUpdateDto implements Serializable {
     String roleInRoom;
-    boolean isLead;
+    boolean lead;
     @NotNull(message = "L'identifiant du worker est obligatoire")
     Long workerId;
     Long roomId;
