@@ -16,5 +16,7 @@ public class RoomMemberReadDto implements Serializable {
     private String roleInRoom;
     private boolean lead;
     private LocalDateTime joinedAt;
+
+    // 🔥 le worker lié
     private Long workerId;
 }

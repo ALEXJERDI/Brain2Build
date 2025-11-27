@@ -19,58 +19,31 @@ public class RoomMemberController {
 
     private final RoomMemberService roomMemberService;
 
-    /**
-     * ✅ Ajouter un Worker à une Room
-     * Ex: POST /api/rooms/3/members
-     */
     @PostMapping
-    public ResponseEntity<RoomMemberReadDto> addWorkerToRoom(
+    public ResponseEntity<RoomMemberReadDto> joinRoom(
             @PathVariable Long roomId,
             @Valid @RequestBody RoomMemberCreateUpdateDto dto) {
 
-        // On crée un nouveau DTO immuable avec le roomId issu de l’URL
-        RoomMemberCreateUpdateDto newDto = new RoomMemberCreateUpdateDto(
-                dto.getRoleInRoom(),
-                dto.isLead(),
-                dto.getWorkerId(),
-                roomId
-        );
+        dto.setRoomId(roomId);
 
-        // Ajouter un worker dans la room
-        RoomMemberReadDto created = roomMemberService.addWorkerToRoom(newDto);
+        RoomMemberReadDto created = roomMemberService.joinRoom(dto);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    /**
-     * ✅ Lister tous les membres d’une Room
-     * Ex: GET /api/rooms/3/members
-     */
     @GetMapping
     public ResponseEntity<List<RoomMemberReadDto>> getMembers(@PathVariable Long roomId) {
-        List<RoomMemberReadDto> members = roomMemberService.getMembersByRoom(roomId);
-        return ResponseEntity.ok(members);
+        return ResponseEntity.ok(roomMemberService.getMembersByRoom(roomId));
     }
 
-    /**
-     * ✅ Promouvoir un membre en Lead
-     * Ex: PUT /api/rooms/3/members/{memberId}/promote
-     */
-    @PutMapping("/{memberId}/promote")
-    public ResponseEntity<RoomMemberReadDto> promoteToLead(@PathVariable Long roomId, @PathVariable Long memberId) {
-        // Promouvoir un membre en lead
-        RoomMemberReadDto promoted = roomMemberService.promoteToLead(memberId);
-        return ResponseEntity.ok(promoted);
+    @PatchMapping("/{memberId}/lead")
+    public ResponseEntity<RoomMemberReadDto> promoteToLead(@PathVariable Long memberId) {
+        return ResponseEntity.ok(roomMemberService.promoteToLead(memberId));
     }
 
-    /**
-     * ✅ Supprimer un membre d’une Room
-     * Ex: DELETE /api/rooms/3/members/{memberId}
-     */
     @DeleteMapping("/{memberId}")
-    public ResponseEntity<Void> removeWorkerFromRoom(@PathVariable Long roomId, @PathVariable Long memberId) {
-        // Supprimer un worker de la room
+    public ResponseEntity<Void> removeWorker(@PathVariable Long memberId) {
         roomMemberService.removeWorkerFromRoom(memberId);
         return ResponseEntity.noContent().build();
     }
 }
-

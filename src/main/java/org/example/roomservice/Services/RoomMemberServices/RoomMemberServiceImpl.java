@@ -4,6 +4,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.roomservice.DTO.Roommemberdto.RoomMemberCreateUpdateDto;
 import org.example.roomservice.DTO.Roommemberdto.RoomMemberReadDto;
+import org.example.roomservice.client.UserClient;
+import org.example.roomservice.client.UserReadDto;
 import org.example.roomservice.entity.Room;
 import org.example.roomservice.entity.RoomMember;
 import org.example.roomservice.mappers.RoomMemberMapper;
@@ -23,65 +25,60 @@ public class RoomMemberServiceImpl implements RoomMemberService {
     private final RoomMemberRepository roomMemberRepository;
     private final RoomRepository roomRepository;
     private final RoomMemberMapper roomMemberMapper;
-
-    // Placeholder for future worker verification
-    // private final UserService userService;
+    private final UserClient userClient; // FEIGN
 
     @Override
-    public RoomMemberReadDto addWorkerToRoom(RoomMemberCreateUpdateDto dto) {
+    public RoomMemberReadDto joinRoom(RoomMemberCreateUpdateDto dto) {
 
-        // Fetch the room from the database
+        // 1️⃣ Vérifier si le worker existe via user-service
+        UserReadDto user = userClient.getUserById(dto.getWorkerId());
+
+        // 2️⃣ Vérifier que c’est bien un WORKER (règle métier fondamentale)
+        if (!"WORKER".equalsIgnoreCase(user.getUserType())) {
+            throw new RuntimeException("Only workers can join a room.");
+        }
+
+        // 3️⃣ Vérifier la Room
         Room room = roomRepository.findById(dto.getRoomId())
                 .orElseThrow(() -> new RuntimeException("Room not found"));
 
-        // Check if the room is already full
         if (room.isFull()) {
             throw new RuntimeException("Room is already full");
         }
 
-        // Check if the worker is already a member of the room
-        boolean alreadyMember = roomMemberRepository.existsByRoomAndWorkerId(room, dto.getWorkerId());
-        if (alreadyMember) {
-            throw new RuntimeException("Worker is already in this room");
+        // 4️⃣ Vérifier si le worker est déjà membre
+        if (roomMemberRepository.existsByRoomAndWorkerId(room, dto.getWorkerId())) {
+            throw new RuntimeException("Worker already in this room");
         }
 
-        // Here you should call User Service to verify if worker exists (future enhancement)
-        // userService.verifyWorkerExistence(dto.getWorkerId());
-
-        // Create the new room member and set the room
+        // 5️⃣ Mapper + créer
         RoomMember member = roomMemberMapper.toEntity(dto);
         member.setRoom(room);
+        member.setLead(false); // jamais auto-lead
 
-        // Check if the first member is being added and set them as lead
-        boolean isFirst = roomMemberRepository.countByRoom_Id(room.getId()) == 0;
-        member.setLead(isFirst);
+        RoomMember saved = roomMemberRepository.save(member);
 
-        // Save the new member
-        RoomMember savedMember = roomMemberRepository.save(member);
-
-        // After saving, check if the room has reached the max capacity
+        // 6️⃣ Vérifier si la room doit devenir full
         long count = roomMemberRepository.countByRoom_Id(room.getId());
         if (count >= room.getMaxMembers()) {
-            room.setFull(true);  // Mark the room as full if the count exceeds or matches maxMembers
-            roomRepository.save(room);  // Save the room again to persist the 'full' status
+            room.setFull(true);
+            roomRepository.save(room);
         }
 
-        return roomMemberMapper.toReadDto(savedMember);  // Return the created member as a DTO
+        return roomMemberMapper.toReadDto(saved);
     }
 
     @Override
     public void removeWorkerFromRoom(Long roomMemberId) {
-        // Find the room member to remove
+
         RoomMember member = roomMemberRepository.findById(roomMemberId)
                 .orElseThrow(() -> new RuntimeException("RoomMember not found"));
 
         Room room = member.getRoom();
-
-        // Remove the member from the room
         roomMemberRepository.delete(member);
 
-        // After deletion, check if the room is now not full and update its status
         long count = roomMemberRepository.countByRoom_Id(room.getId());
+
         if (room.isFull() && count < room.getMaxMembers()) {
             room.setFull(false);
             roomRepository.save(room);
@@ -90,7 +87,6 @@ public class RoomMemberServiceImpl implements RoomMemberService {
 
     @Override
     public List<RoomMemberReadDto> getMembersByRoom(Long roomId) {
-        // Fetch all members of the room and map them to DTOs
         return roomMemberRepository.findByRoom_Id(roomId)
                 .stream()
                 .map(roomMemberMapper::toReadDto)
@@ -99,7 +95,6 @@ public class RoomMemberServiceImpl implements RoomMemberService {
 
     @Override
     public List<RoomMemberReadDto> getMembershipsByWorker(Long workerId) {
-        // Fetch all memberships of the worker and map them to DTOs
         return roomMemberRepository.findByWorkerId(workerId)
                 .stream()
                 .map(roomMemberMapper::toReadDto)
@@ -108,27 +103,22 @@ public class RoomMemberServiceImpl implements RoomMemberService {
 
     @Override
     public RoomMemberReadDto promoteToLead(Long roomMemberId) {
-        // Find the room member to promote
+
         RoomMember member = roomMemberRepository.findById(roomMemberId)
-                .orElseThrow(() -> new NoSuchElementException("Room member not found"));
+                .orElseThrow(() -> new RuntimeException("RoomMember not found"));
 
-        // Check if the member is already a lead
         if (member.isLead()) {
-            throw new IllegalStateException("This member is already a lead");
+            throw new IllegalStateException("Already lead");
         }
 
-        // Check if the room already has a lead
-        boolean leadExists = roomMemberRepository.existsByRoom_IdAndLeadTrue(member.getRoom().getId());
-        if (leadExists) {
-            throw new IllegalStateException("This room already has a lead");
+        if (roomMemberRepository.existsByRoom_IdAndLeadTrue(member.getRoom().getId())) {
+            throw new IllegalStateException("Room already has a lead");
         }
 
-        // Promote the member to lead
         member.setLead(true);
 
-        // Save the updated member
-        RoomMember savedMember = roomMemberRepository.saveAndFlush(member);
+        RoomMember saved = roomMemberRepository.saveAndFlush(member);
 
-        return roomMemberMapper.toReadDto(savedMember);
+        return roomMemberMapper.toReadDto(saved);
     }
 }

@@ -1,7 +1,5 @@
 package org.example.roomservice.Services.RoomMemberServices;
 
-
-
 import org.example.roomservice.DTO.Roommemberdto.RoomMemberCreateUpdateDto;
 import org.example.roomservice.DTO.Roommemberdto.RoomMemberReadDto;
 
@@ -9,7 +7,7 @@ import java.util.List;
 
 public interface RoomMemberService {
 
-    RoomMemberReadDto addWorkerToRoom(RoomMemberCreateUpdateDto dto);
+    RoomMemberReadDto joinRoom(RoomMemberCreateUpdateDto dto);
 
     void removeWorkerFromRoom(Long roomMemberId);
 
